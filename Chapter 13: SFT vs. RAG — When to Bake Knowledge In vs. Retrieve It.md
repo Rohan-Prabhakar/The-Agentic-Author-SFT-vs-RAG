@@ -43,7 +43,9 @@ $V = \frac{1}{T_{\text{update}}}$
 where $T_{\text{update}}$ is the expected interval between updates to the ground truth of those facts, expressed as a multiple of your model retraining cycle. If your fine-tuning cycle is quarterly and your knowledge updates daily, $T_{\text{update}}$ is 1/90 of your retraining period and V equals 90. High-V knowledge belongs in retrieval. Low-V knowledge, where $T_{\text{update}}$ is much greater than $T_{\text{retrain}}$, can be encoded in weights without staleness risk. The routing decision follows from the number, not from intuition.
 
 ---
+
 <img width="944" height="768" alt="Screenshot 2026-04-04 120632" src="https://github.com/user-attachments/assets/77723aab-656b-496d-904b-f5ee701b4eee" />
+
 ---
 
 Working through the classification is worth doing once in full, because the table below presents conclusions rather than the reasoning that produces them. Take the first row. SEC penalty thresholds are revised by rulemaking, and the SEC's rulemaking cadence for civil monetary penalties runs roughly quarterly. The firm's retraining cycle is biannual. So $T_{\text{update}}$ is 0.25 years and $T_{\text{retrain}}$ is 0.5 years, giving $T_{\text{update}}$ expressed as a multiple of the retraining cycle: 0.25 divided by 0.5, which equals 0.5. Therefore V equals 1 divided by 0.5, giving 2.0 at minimum. Because penalty schedules can be amended mid-cycle without notice, the effective V is higher. We round to 4.0 and route to RAG.
