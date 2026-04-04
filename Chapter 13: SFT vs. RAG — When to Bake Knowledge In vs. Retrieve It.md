@@ -42,11 +42,10 @@ $V = \frac{1}{T_{\text{update}}}$
 
 where $T_{\text{update}}$ is the expected interval between updates to the ground truth of those facts, expressed as a multiple of your model retraining cycle. If your fine-tuning cycle is quarterly and your knowledge updates daily, $T_{\text{update}}$ is 1/90 of your retraining period and V equals 90. High-V knowledge belongs in retrieval. Low-V knowledge, where $T_{\text{update}}$ is much greater than $T_{\text{retrain}}$, can be encoded in weights without staleness risk. The routing decision follows from the number, not from intuition.
 
----
 
 <img width="944" height="768" alt="Screenshot 2026-04-04 120632" src="https://github.com/user-attachments/assets/77723aab-656b-496d-904b-f5ee701b4eee" />
 
----
+
 
 Working through the classification is worth doing once in full, because the table below presents conclusions rather than the reasoning that produces them. Take the first row. SEC penalty thresholds are revised by rulemaking, and the SEC's rulemaking cadence for civil monetary penalties runs roughly quarterly. The firm's retraining cycle is biannual. So $T_{\text{update}}$ is 0.25 years and $T_{\text{retrain}}$ is 0.5 years, giving $T_{\text{update}}$ expressed as a multiple of the retraining cycle: 0.25 divided by 0.5, which equals 0.5. Therefore V equals 1 divided by 0.5, giving 2.0 at minimum. Because penalty schedules can be amended mid-cycle without notice, the effective V is higher. We round to 4.0 and route to RAG.
 
@@ -56,19 +55,11 @@ The decision boundary is not a bright line but a risk threshold. A reasonable de
 
 Here is how the Chicago team should have applied this before deployment. Their retraining cycle was biannual. The compliance assistant needed to answer questions across a realistic cross-section of investment advisory knowledge:
 
-| Knowledge Category | Ground Truth Update Frequency | $T_{\text{update}}$ (× retrain cycle) | V | Route |
-|---|---|---|---|---|
-| SEC penalty thresholds | Quarterly | 0.25 | 4.0 | RAG |
-| FINRA conduct rules | Annual | 0.5 | 2.0 | RAG |
-| AML/KYC procedural requirements | Annual | 1.0 | 1.0 | RAG or Hybrid |
-| Form ADV filing structure | Every 3 years | 6.0 | 0.17 | SFT |
-| Investment Adviser Act definitions | Statutory, rarely changed | 20+ | less than 0.05 | SFT |
-| Fiduciary duty standards | Effectively stable | 50+ | less than 0.02 | SFT |
 
----
-> **[INSERT FIGURE 13.3 — Volatility index table with routing bands]**
-> *Place immediately after the knowledge category table above. The figure is a styled version of this same table — the prose table stays as reference, the figure adds the color band and Chicago callout annotation.*
----
+<img width="1257" height="500" alt="Screenshot 2026-04-04 121202" src="https://github.com/user-attachments/assets/074e6a66-fc31-42bb-a25d-c044676d140a" />
+
+
+
 
 The $15,000 figure lived in row one. The team encoded it in the storage medium appropriate for rows four through six. That mismatch, V equal to 4 knowledge in a system whose write latency is 0.5 years, is the architectural error, stated as a number.
 
@@ -86,10 +77,10 @@ The contextual memory model has its own failure mode at production scale. A vect
 
 The processing failure here is distinct from the storage failure. The documents may be correct and current. The retrieval mechanism may still return the wrong one, not because the store is stale, but because two chunks representing the same regulation at different effective dates score similarly against the query vector, and the ranking function has no way to prefer the more recent without explicit metadata filtering. Correct storage plus flawed processing still produces a wrong answer.
 
----
-> **[INSERT FIGURE 13.2 — Retrieval failure in embedding space]**
-> *Place after the sentence above. The figure shows the two contradictory chunks nearly equidistant from the query vector — the visual makes the mechanism of the processing failure concrete before the next paragraph draws the conclusion.*
----
+
+<img width="1160" height="884" alt="Screenshot 2026-04-04 121826" src="https://github.com/user-attachments/assets/77b333c1-3852-458f-8207-22a18c2e6cc6" />
+
+
 
 RAG does not eliminate the consistency problem. It relocates it from the model weights to the data infrastructure. This is often a better place to have the problem, because data infrastructure consistency is a more mature engineering discipline than model weight management. But it is not a solved problem, and architects who deploy RAG because it sounds grounded without building explicit vector store hygiene procedures are trading one silent failure mode for another.
 
@@ -135,10 +126,9 @@ This is not a monitoring bug. It is a monitoring architecture decision with a kn
 
 A further refinement available in latency-constrained systems is RAG result caching. Retrieved chunks for high-frequency regulatory queries, such as the penalty schedules that analysts check dozens of times per day, can be cached at the application layer with a TTL that matches the update frequency of the underlying regulatory source. A query about current ADV penalty thresholds that hits a warm cache returns in under 50ms. A cache miss triggers a full retrieval. This pattern recovers most of the latency cost of RAG for stable-but-volatile knowledge, and it is the architecture that could have satisfied both the 200ms SLA and the freshness requirement in the Chicago case, had the tradeoff been made explicit. The cache introduces its own failure mode: a TTL set longer than the source update frequency will serve stale cached chunks with the same confidence as a fresh retrieval. That failure mode requires its own monitoring layer, with cache invalidation events logged and compared against source update events, and an alert threshold on the gap.
 
----
-> **[INSERT FIGURE 13.4 — Cache TTL failure timeline]**
-> *Place after the sentence above, at the end of the caching section. The figure shows the failure window between amendment publication and TTL expiry — it makes the detection window argument from the previous paragraph visually concrete before the chapter moves to the tetrahedron section.*
----
+
+<img width="1017" height="601" alt="Screenshot 2026-04-04 121009" src="https://github.com/user-attachments/assets/f3bb1f44-1afd-4769-b817-29855e16514e" />
+
 
 ## Structure, Processing, and What Evaluations Cannot See
 
