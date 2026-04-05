@@ -95,9 +95,8 @@ During the drafting of this chapter, the AI (Bookie) proposed a three-tier route
 
 The router's false negative rate — HIGH_V queries misrouted to a lower tier — is the critical reliability parameter in a hybrid system. Adding MEDIUM_V creates an ambiguous boundary that increases this rate. A HIGH_V query misrouted to a MEDIUM_V cache path may return a stale answer silently, a failure mode harder to detect than a simple HIGH_V/LOW_V misroute.
 
-The binary classifier was kept. It fails more visibly, is more auditable, and when it fails it fails toward retrieval — not toward staleness.
+The binary classifier was kept. It fails more visibly, is more auditable, and when it fails it fails toward retrieval and not toward staleness.
 
-This decision is documented in `authors_note.md` (Page 2) and stated on camera in the video at the Human Decision Node.
 
 ---
 
