@@ -120,9 +120,3 @@ The binary classifier was kept. It fails more visibly, is more auditable, and wh
 - Asai et al. (2024). *Self-RAG: Learning to Retrieve, Generate, and Critique.* ICLR 2024.
 - Brown, N. (2026). *80 Days to Stay.* skepticism.ai. https://www.skepticism.ai/p/80-days-to-stay-connecting-recent
 
----
-
-## Author
-
-Rohan — MS Software Engineering Systems, Northeastern University
-INFO 7375 — Prompt Engineering for Generative AI
