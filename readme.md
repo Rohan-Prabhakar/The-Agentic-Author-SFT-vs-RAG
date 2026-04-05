@@ -102,8 +102,6 @@ The binary classifier was kept. It fails more visibly, is more auditable, and wh
 
 ## Figures
 
-All four publication figures are in `figures/figures.html`. Open in any browser and print to PDF.
-
 | Figure | Content |
 |---|---|
 | 13.1 | Hybrid routing architecture — both paths with latency and cost annotations |
