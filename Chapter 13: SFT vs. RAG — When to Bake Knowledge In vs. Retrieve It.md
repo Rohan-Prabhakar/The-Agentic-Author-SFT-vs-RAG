@@ -1,3 +1,6 @@
+
+<img width="1264" height="848" alt="Gemini_Generated_Image_grcyxsgrcyxsgrcy (1)" src="https://github.com/user-attachments/assets/13621863-b4dc-4aa9-a7da-131b5d6b95f4" />
+
 # Chapter 13: SFT vs. RAG: When to Bake Knowledge In vs. Retrieve It
 
 On March 12, 2024, a financial compliance assistant deployed by a mid-sized investment advisory firm gave an analyst a number: $15,000. That was the U.S. Securities and Exchange Commission's (SEC) penalty threshold for late Form ADV filings, accurate as of the model's training cutoff in November 2023. The analyst used it to assess a client's exposure and file a response brief. The actual threshold, following a rule amendment effective February 1, 2024, was $25,000. The discrepancy was not discovered until the client received a notice of deficiency six weeks later.
